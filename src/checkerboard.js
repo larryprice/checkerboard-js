@@ -45,7 +45,7 @@ function drawHorizontalLines() {
 function paintSquare(square) {
   prisonContext.beginPath();
   prisonContext.fillStyle = "#000";
-  prisonContext.fillRect(getX(square), getY(square), squareWidth, squareHeight);
+  prisonContext.fillRect(square.topLeft.x, square.topLeft.y, squareWidth, squareHeight);
 
   freshlyPainted.push(square);
 }
@@ -102,15 +102,20 @@ function prisonMouseMove(e) {
     freshlyPainted = [];
 
     // redraw new square
-    var baseRow = firstSquare.row < square.row ? firstSquare.row : square.row;
-    var baseColumn = firstSquare.column < square.column ? firstSquare.column : square.column;
-    var rowCount = Math.abs(firstSquare.row - square.row)
-    var columnCount = Math.abs(firstSquare.column - square.column);
+    var baseRow = firstSquare.topLeft.x < square.topLeft.x ? firstSquare.topLeft.x : square.topLeft.x;
+    var baseColumn = firstSquare.topLeft.y < square.topLeft.y ? firstSquare.topLeft.y : square.topLeft.y;
+
+    baseRow = baseRow / squareWidth;
+    baseColumn = baseColumn / squareHeight;
+
+    var rowCount = Math.abs((firstSquare.topLeft.x - square.topLeft.x) / squareWidth);
+    var columnCount = Math.abs((firstSquare.topLeft.y - square.topLeft.y) / squareHeight);
 
     for (var x = 0; x <= rowCount; x++) {
       for (var y = 0; y <= columnCount; y++) {
         if (x == 0 || x == rowCount || y == 0 || y == columnCount) {
-          paintSquare(new Square(baseRow + x, baseColumn + y));
+          var coord = new Coordinate((baseRow + x) * squareWidth, (baseColumn + y) * squareHeight);
+          paintSquare(new Cell(coord, new Cell(coord.x + squareWidth, coord.y + squareHeight)));
         }
       }
     }
@@ -118,15 +123,7 @@ function prisonMouseMove(e) {
 }
 
 function areSameSquares(square1, square2) {
-  return (square1.column == square2.column) && (square1.row == square2.row);
-}
-
-function getY(square) {
-  return square.row * squareWidth;
-}
-
-function getX(square) {
-  return square.column * squareHeight;
+  return (square1.topLeft.x == square2.topLeft.x) && (square1.topLeft.y == square2.topLeft.y);
 }
 
 function getSquare(e) {
@@ -144,5 +141,11 @@ function getSquare(e) {
   y -= prisonCanvas.offsetTop;
   x = Math.min(x, prisonWidth);
   y = Math.min(y, prisonHeight);
-  return new Cell(Math.floor(y / squareHeight), Math.floor(x / squareWidth));
+
+  return GridBuilder.makeCell(
+    Math.floor(x / squareWidth),
+    Math.floor(y / squareHeight),
+    squareWidth,
+    squareHeight
+  );
 }

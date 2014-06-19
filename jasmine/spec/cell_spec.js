@@ -1,15 +1,17 @@
-describe("cell", function() {
-  describe("row", function() {
-    it("sets row at construction time", function() {
-      var cell = new Cell(5);
-      expect(cell.row).toBe(5);
+describe("Cell", function () {
+  describe("topLeft", function () {
+    it("sets top left at construction time", function () {
+      var cell = new Cell(new Coordinate(5, 10));
+      expect(cell.topLeft.x).toBe(5);
+      expect(cell.topLeft.y).toBe(10);
     });
   });
 
-  describe("column", function() {
-    it("sets column at construction time", function() {
-      var cell = new Cell(5, 10);
-      expect(cell.column).toBe(10);
+  describe("bottomRight", function () {
+    it("sets bottom right at construction time", function () {
+      var cell = new Cell(new Coordinate(5, 10), new Coordinate(10, 25));
+      expect(cell.bottomRight.x).toBe(10);
+      expect(cell.bottomRight.y).toBe(25);
     });
   });
 });

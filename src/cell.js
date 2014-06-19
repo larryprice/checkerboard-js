@@ -1,11 +1,4 @@
-var Cell = function (row, column) {
-  this.row = row;
-  this.column = column;
+var Cell = function (topLeft, bottomRight) {
+  this.topLeft = topLeft;
+  this.bottomRight = bottomRight;
 };
-
-Cell.prototype = function () {
-
-  return {
-
-  }
-}();
